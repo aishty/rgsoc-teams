@@ -69,7 +69,6 @@ describe User do
         @supervisor.destroy
         @role.destroy
       end
-
     end
 
     
