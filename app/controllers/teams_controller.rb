@@ -91,4 +91,7 @@ class TeamsController < ApplicationController
 
     @display_roles.map!(&:pluralize)
   end
+  def selected?
+    @team.kind == 'sponsored'||'voluntary'
+  end
 end
