@@ -88,7 +88,6 @@ class Team < ActiveRecord::Base
 
   def selected_team?
      Time.now.month > 6
-
   end
 
   # def must_have_unique_students
