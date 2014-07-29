@@ -22,7 +22,6 @@ class Team < ActiveRecord::Base
   has_one :last_activity, -> { order('id DESC') }, class_name: 'Activity'
   has_many :comments
   belongs_to :event
-
   accepts_nested_attributes_for :roles, :sources, allow_destroy: true
 
   before_create :set_number
@@ -87,7 +86,9 @@ class Team < ActiveRecord::Base
   end
 
   def selected_team?
-     Time.now.month > 6
+    Time.now.month > 6  # for the time being
+    #self.is_selected  # this is what we are going to implement with is_selected column for users visible only to admin
+
   end
 
   # def must_have_unique_students
