@@ -88,7 +88,6 @@ class Team < ActiveRecord::Base
   def selected_team?
     Time.now.month > 6  # for the time being
     #self.is_selected  # this is what we are going to implement with is_selected column for users visible only to admin
-
   end
 
   # def must_have_unique_students
