@@ -5,11 +5,9 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 /config/database.yml
-/config/database.yml~
-.idea
-
 .ruby-version
 .ruby-gemset
+.idea
 
 .DS_Store
 
@@ -24,9 +22,10 @@
 /tmp
 
 conferences_data.rb
+
 conferences_raffle.txt
 coverage
 *~
 
-
+conferences_raffle.txt
 
