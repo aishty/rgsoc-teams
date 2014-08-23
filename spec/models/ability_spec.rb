@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'cancan/matchers'
 
 describe Ability do
-  context 'ability takes new user as parameter' do
+  context 'ability' do
     subject {ability}
 
     let(:ability) { Ability.new(user) }
@@ -17,12 +17,12 @@ describe Ability do
       context 'when a user is admin' do
         let(:user) { FactoryGirl.create(:user) }
         let(:organizer_role) { FactoryGirl.create(:organizer_role, user: user) }
-        it "should be able to do anything on anyone's account" do
+        it "should be able to CRUD on anyone's account" do
           expect(subject).to be_able_to(:crud, organizer_role)
         end
       end
 
-      describe 'she/he is not allowed to do everything on someone else account' do
+      describe 'she/he is not allowed to CRUD on someone else account' do
         let(:other_user) { FactoryGirl.create(:user) }
         it { ability.should_not be_able_to(:show, other_user) }
       end
@@ -54,6 +54,30 @@ describe Ability do
         end
       end
 
+      describe 'access to mailings' do
+        let!(:mailing) { Mailing.new }
+        let!(:user) { FactoryGirl.create(:student) }
+
+        context 'when user is admin' do
+          let(:user) { FactoryGirl.create(:organizer) }
+
+          it { expect(subject).to be_able_to :crud, mailing }
+        end
+
+        context 'when user is a recipient' do
+          it 'allows to read' do
+            mailing.to = %w(students)
+            expect(subject).to be_able_to :read, mailing
+          end
+        end
+
+        context 'when user has nothing to do with the mailing' do
+          it 'will not allow to read' do
+            expect(subject).not_to be_able_to :read, mailing
+          end
+        end
+      end
+
       context 'permitting activities' do
         context 'for feed_entries' do
           it 'allows anyone to read' do
@@ -75,8 +99,7 @@ describe Ability do
 
   context 'to join helpdesk team' do
     let(:user) { FactoryGirl.create(:helpdesk) }
-    let(:help) { FactoryGirl.create(:team, :helpdesk) }
-    let(:team) { FactoryGirl.create(:team)}
+    let(:team) { FactoryGirl.create(:team) }
 
     subject { ability }
     let(:ability) { Ability.new(user) }
@@ -90,7 +113,8 @@ describe Ability do
     end
 
     it 'should be able to join helpdesk team' do
-      ability.should be_able_to(:join, help)
+      helpdesk_team = FactoryGirl.create(:team, :helpdesk)
+      ability.should be_able_to(:join, helpdesk_team)
     end
   end
 

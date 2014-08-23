@@ -22,7 +22,6 @@ class Rating < ActiveRecord::Base
     Hashr.new(super)
   end
 
-
   def value(options = {})
     data = self.data
     data = data.except(:bonus) unless options[:bonus_points]
