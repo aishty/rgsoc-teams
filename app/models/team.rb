@@ -3,13 +3,16 @@ class Team < ActiveRecord::Base
 
   KINDS = %w(sponsored voluntary)
 
-  validates :kind, presence: true
+  validates :kind, presence: true, if: :selected_team?, unless: :access?
   validates :name, uniqueness: true, allow_blank: true
-  validates :projects, presence: true
+  validates :projects, presence: true, if: :selected_team?, unless: :access?
+
   # validate :must_have_members
   # validate :must_have_unique_students
 
   attr_accessor :checked
+ # attr_accessible :is_selected
+
 
   has_many :roles, dependent: :destroy
   has_many :members, class_name: 'User', through: :roles, source: :user
@@ -20,6 +23,7 @@ class Team < ActiveRecord::Base
   has_many :activities, dependent: :destroy
   has_one :last_activity, -> { order('id DESC') }, class_name: 'Activity'
   has_many :comments
+  has_many :applications
   belongs_to :event
 
   accepts_nested_attributes_for :roles, :sources, allow_destroy: true
@@ -84,6 +88,22 @@ class Team < ActiveRecord::Base
     self.last_checked_at = Time.now
     self.last_checked_by = checked.is_a?(String) ? checked.to_i : checked.id
   end
+
+  def selected_team?
+    is_selected
+  end
+
+  def current_user
+    Thread.current = self.current_user
+  end
+
+  def access?
+    User.current.admin?
+  end
+
+
+
+
 
   # def must_have_unique_students
   #   students.each do |user|
